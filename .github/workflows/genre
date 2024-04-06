@@ -1,0 +1,49 @@
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+
+X = [
+    "A thrilling action-packed movie about spies.",
+    "A heartwarming romantic comedy set in Paris.",
+    "An adventurous fantasy film with magical creatures.",
+]
+y = ["Action", "Comedy", "Fantasy"]
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Vectorize text data using TF-IDF
+tfidf_vectorizer = TfidfVectorizer(max_features=1000)  # Adjust max_features as needed
+X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)
+X_test_tfidf = tfidf_vectorizer.transform(X_test)
+
+# Train Naive Bayes classifier
+naive_bayes_classifier = MultinomialNB()
+naive_bayes_classifier.fit(X_train_tfidf, y_train)
+
+# Make predictions on the testing data
+y_pred = naive_bayes_classifier.predict(X_test_tfidf)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+
+# Display classification report
+print(classification_report(y_test, y_pred))
+
+import matplotlib.pyplot as plt
+
+# Sample data
+genres = ['Action', 'Comedy', 'Drama', 'Fantasy']
+budgets = [10000000, 5000000, 8000000, 12000000]
+ratings = [8.5, 7.2, 6.8, 9.0]
+
+# Plotting budgets vs. ratings
+plt.figure(figsize=(8, 6))
+plt.scatter(budgets, ratings, c='blue', alpha=0.5)
+plt.title('Budgets vs. Ratings for Different Genres')
+plt.xlabel('Budget (in USD)')
+plt.ylabel('Rating')
+plt.grid(True)
+plt.show()
